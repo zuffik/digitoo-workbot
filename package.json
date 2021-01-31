@@ -1,0 +1,26 @@
+{
+  "name": "workbot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/dotenv": "8.2.0",
+    "@types/jira-client": "6.13.1",
+    "@types/lodash": "4.14.168",
+    "@types/moment": "2.13.0",
+    "@types/node": "14.14.20",
+    "ts-node": "9.1.1",
+    "typescript": "4.1.3"
+  },
+  "dependencies": {
+    "@slack/webhook": "5.0.4",
+    "dotenv": "8.2.0",
+    "jira-client": "6.21.1",
+    "lodash": "4.17.20",
+    "moment": "2.29.1",
+    "toggl-client": "1.0.2"
+  },
+  "scripts": {
+    "start": "ts-node ./src/index.ts"
+  }
+}
