@@ -15,7 +15,7 @@ interface Report {
 async function generateReports(): Promise<Report[]> {
     const toggl = togglClient({apiToken: env.TOGGL_TRACK_TOKEN});
     const timeEntries = await toggl.timeEntries.list({
-        start_date: moment().subtract(moment().day() === 1 ? 3 : 2, 'day').startOf('day').toISOString(),
+        start_date: moment().subtract(moment().day() === 1 ? 3 : 1, 'day').startOf('day').toISOString(),
         end_date: moment().subtract(1, 'day').endOf('day').toISOString(),
     });
     const clientId = parseInt(env.APP_REPORT_TOGGL_CLIENT_ID);
