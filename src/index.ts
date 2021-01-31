@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import {IncomingWebhook} from "@slack/webhook";
 import {env} from "./env";
+import JiraApi from 'jira-client';
 // @ts-ignore
 import togglClient, {Project, TimeEntry} from 'toggl-client';
 import moment from 'moment';
@@ -29,22 +30,29 @@ async function generateReports(): Promise<Report[]> {
     }));
 }
 
+function generateDescription(description: string): string {
+    let desc: string;
+    if (description.startsWith('DIG-')) {
+        const digRegex = /^(DIG-\d+)\s/;
+        const m = digRegex.exec(description);
+        if (m) {
+            desc = `<https://digitoo.atlassian.net/browse/${m[1]}|${m[1]}> ${description.replace(digRegex, '')}`;
+        } else {
+            desc = description;
+        }
+    } else {
+        desc = description;
+    }
+    return `• ${desc}`;
+}
+
 async function run() {
     dotenv.config();
     const slack = new IncomingWebhook(env.SLACK_WEBHOOK_URL);
     const reports = await generateReports();
-    /*const jira = new JiraApi({
-        protocol: 'https',
-        host: env.JIRA_URL,
-        username: env.JIRA_USERNAME,
-        password: env.JIRA_PASSWORD,
-        apiVersion: '2',
-        strictSSL: true
-    });
-    const user = await jira.getCurrentUser();*/
     const message = _.entries(_.groupBy(reports, 'day')).reduce((result, [day, reports]: [string, Report[]]) => {
         let r = `${result + day}: ~${reports.reduce((s, c) => s + c.estimate, 0)}h\n`;
-        r += _.entries(_.groupBy(reports, r => r.entry.description)).map(([description, ]) => `• ${description}`).join('\n');
+        r += _.entries(_.groupBy(reports, r => r.entry.description)).map(([description,]) => generateDescription(description)).join('\n');
         return r + '\n';
     }, '');
     await slack.send(message);

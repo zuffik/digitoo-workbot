@@ -7,7 +7,7 @@ export interface Env {
 
     JIRA_URL: string;
     JIRA_USERNAME: string;
-    JIRA_PASSWORD: string;
+    JIRA_API_TOKEN: string;
 
     TOGGL_TRACK_TOKEN: string;
 
