@@ -50,6 +50,7 @@ async function run() {
     dotenv.config();
     const slack = new IncomingWebhook(env.SLACK_WEBHOOK_URL);
     const reports = await generateReports();
+    if (reports.length === 0) return;
     const message = _.entries(_.groupBy(reports, 'day')).reduce((result, [day, reports]: [string, Report[]]) => {
         let r = `${result + day}: ~${reports.reduce((s, c) => s + c.estimate, 0)}h\n`;
         r += _.entries(_.groupBy(reports, r => r.entry.description)).map(([description,]) => generateDescription(description)).join('\n');
