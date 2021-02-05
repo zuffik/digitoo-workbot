@@ -19,7 +19,7 @@ async function generateReports(): Promise<Report[]> {
         start_date: moment().subtract(moment().day() === 1 ? 3 : 1, 'day').startOf('day').toISOString(),
         end_date: moment().subtract(1, 'day').endOf('day').toISOString(),
     });
-    const clientId = parseInt(env.APP_REPORT_TOGGL_CLIENT_ID);
+    const clientId = parseInt(env.TOGGL_CLIENT_ID);
     const projects = await toggl.clients.projects(clientId, true);
     const pids = projects.map((p: Project) => p.id);
     const report = timeEntries.filter((entry: TimeEntry) => entry.duration >= 60 * 5 && pids.includes(entry.pid));
@@ -32,11 +32,11 @@ async function generateReports(): Promise<Report[]> {
 
 function generateDescription(description: string): string {
     let desc: string;
-    if (description.startsWith('DIG-')) {
-        const digRegex = /^(DIG-\d+)\s/;
+    if (description.startsWith(`${env.JIRA_TASK_PREFIX}-`)) {
+        const digRegex = new RegExp(`^(${env.JIRA_TASK_PREFIX}-\\d+)\\s`);
         const m = digRegex.exec(description);
         if (m) {
-            desc = `<https://digitoo.atlassian.net/browse/${m[1]}|${m[1]}> ${description.replace(digRegex, '')}`;
+            desc = `<https://${env.JIRA_URL}/browse/${m[1]}|${m[1]}> ${description.replace(digRegex, '')}`;
         } else {
             desc = description;
         }
