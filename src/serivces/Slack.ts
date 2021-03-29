@@ -10,7 +10,7 @@ export interface GenerateMessagesFromReportsOpts {
 
 export function generateMessageFromReports(reports: Report[], opts: GenerateMessagesFromReportsOpts) {
     return _.entries(_.groupBy(reports, 'day')).reduce((result, [day, reports]: [string, Report[]]) => {
-        let r = `*${result + day}:* ~${reports.reduce((s, c) => s + c.estimate, 0)}h\n`;
+        let r = ` *${result + day}:* ~${reports.reduce((s, c) => s + c.estimate, 0)}h\n`;
         r += _.entries(_.groupBy(reports, r => r.entry.description)).map(([description,]) => generateDescriptionWithLink({
             description,
             taskPrefix: opts.taskPrefix,

@@ -6,7 +6,6 @@ import {sendReports} from "./serivces/Slack";
 
 async function run() {
     dotenv.config();
-    console.log(env);
     const reports = await generateReports({
         apiToken: env.TOGGL_TRACK_TOKEN,
         clientId: parseInt(env.TOGGL_CLIENT_ID)
